@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ix-operator"
+version = "0.1.0"
+description = "Secure operator platform for autonomous agents."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Bryce Lovell" }
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Rust",
+  "Topic :: Security",
+  "Topic :: Software Development :: Libraries"
+]
+dependencies = []
+
+[project.scripts]
+ix-operator = "ix_operator.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.11,<2.0",
+  "pytest>=8.3,<9.0",
+  "ruff>=0.6,<1.0"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ix_operator"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+disallow_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_unused_ignores = true
