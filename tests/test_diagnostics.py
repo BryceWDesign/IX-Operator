@@ -208,6 +208,7 @@ def test_application_status_snapshot_reports_identity_state(
 
     assert before.identity_exists is False
     assert before.local_peer_id is None
+    assert before.transport_supported is True
 
     app.initialize_identity(peer_id="node-alpha")
     after = app.status_snapshot()
@@ -215,6 +216,22 @@ def test_application_status_snapshot_reports_identity_state(
     assert after.identity_exists is True
     assert after.local_peer_id == "node-alpha"
     assert after.native_extension_available is True
+    assert after.transport_supported is True
+
+
+def test_application_status_snapshot_reports_unimplemented_transport(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(native_module, "_native", FakeNativeModule())
+    monkeypatch.setenv("IX_OPERATOR_RUNTIME_DIR", str(tmp_path / "runtime"))
+    monkeypatch.setenv("IX_OPERATOR_TRANSPORT", "tor")
+
+    app = OperatorApplication.from_env()
+    snapshot = app.status_snapshot()
+
+    assert snapshot.transport == "tor"
+    assert snapshot.transport_supported is False
 
 
 def test_node_snapshot_reports_agents_and_channels() -> None:
