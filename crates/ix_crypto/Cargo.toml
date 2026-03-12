@@ -1,0 +1,11 @@
+[package]
+name = "ix_crypto"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Rust cryptographic core for IX-Operator"
+
+[lib]
+name = "ix_crypto"
+path = "src/lib.rs"
