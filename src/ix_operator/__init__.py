@@ -15,6 +15,16 @@ from ix_operator.agents import (
 )
 from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSeverity
 from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
+from ix_operator.ix import (
+    AgentBlock,
+    GoalStatement,
+    IxParseError,
+    IxProgram,
+    IxStatement,
+    RememberStatement,
+    SayStatement,
+    parse_ix_script,
+)
 from ix_operator.runtime import RuntimeContext
 from ix_operator.session import (
     CHALLENGE_LEN,
@@ -70,6 +80,7 @@ from ix_operator.transport import (
 __all__ = [
     "__version__",
     "PRODUCT_NAME",
+    "AgentBlock",
     "AgentDefinition",
     "AgentMemoryStore",
     "AgentMessage",
@@ -86,6 +97,7 @@ __all__ = [
     "DEFAULT_RECEIVE_TIMEOUT_SECONDS",
     "DEFAULT_REPLAY_WINDOW_SIZE",
     "DEFAULT_SESSION_TTL_SECONDS",
+    "GoalStatement",
     "HEADER_SIZE",
     "HandshakeAck",
     "HandshakeCoordinator",
@@ -93,6 +105,9 @@ __all__ = [
     "HandshakeHello",
     "HandshakeResponse",
     "HandshakeTranscript",
+    "IxParseError",
+    "IxProgram",
+    "IxStatement",
     "LocalDelivery",
     "LocalSecrets",
     "LocalTransportClosedError",
@@ -113,12 +128,14 @@ __all__ = [
     "PacketCodec",
     "PacketHeader",
     "PeerIdentity",
+    "RememberStatement",
     "ReplayRejectedError",
     "ReplayWindow",
     "RuntimeContext",
     "RuntimePaths",
     "SESSION_ID_FIELD_SIZE",
     "SIGNATURE_LEN",
+    "SayStatement",
     "SessionBindingError",
     "SessionManager",
     "SessionMaterial",
@@ -132,6 +149,7 @@ __all__ = [
     "MessageType",
     "build_packet",
     "packet_fingerprint",
+    "parse_ix_script",
 ]
 
 PRODUCT_NAME = "IX-Operator"
