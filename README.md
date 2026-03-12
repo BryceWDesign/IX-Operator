@@ -44,6 +44,19 @@ IX-Operator v1 does **not** include:
 If those topics ever appear in old notes or prototype repos, they are not part
 of the clean rebuild.
 
+## Current transport reality
+
+The config surface exposes `local`, `tcp`, and `tor`, but **only `local` is
+implemented in v1**.
+
+That means:
+
+- `local` works
+- `tcp` and `tor` are reserved for future implementation
+- selecting an unimplemented backend will fail fast with a clear runtime error
+
+This is intentional. The product should tell the truth.
+
 ## Repository layout
 
 ```text
@@ -99,8 +112,11 @@ pytest
 Run the Rust test suite:
 cargo test -p ix_crypto
 
-cargo test -p ix_crypto
+Run the CLI info command:
 ix-operator info
+
+Run the CLI diagnostics command:
+ix-operator status
 
 Initialize a node identity:
 ix-operator identity init --peer-id node-alpha
@@ -129,6 +145,8 @@ Current CLI surface
 The current CLI provides:
 
 ix-operator info
+
+ix-operator status
 
 ix-operator identity init
 
