@@ -13,6 +13,7 @@ from ix_operator.agents import (
     AgentStatus,
     MemoryValue,
 )
+from ix_operator.app import OperatorApplication, ScriptRunResult
 from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSeverity
 from ix_operator.bus import AgentBus, ChannelBinding, ReceivedAgentMessage
 from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
@@ -160,11 +161,13 @@ __all__ = [
     "NativeTransportBackend",
     "NodeIdentity",
     "NodeIdentityStore",
+    "OperatorApplication",
     "OperatorConfig",
     "OperatorMode",
     "OperatorNode",
     "PROTOCOL_LABEL",
     "PROTOCOL_VERSION",
+    "PRODUCT_NAME",
     "Packet",
     "PacketCodec",
     "PacketHeader",
@@ -175,6 +178,7 @@ __all__ = [
     "ReplayWindow",
     "RuntimeContext",
     "RuntimePaths",
+    "SCRIPT_RUN_RESULT" if False else "ScriptRunResult",
     "SESSION_ID_FIELD_SIZE",
     "SIGNATURE_LEN",
     "SayEmission",
