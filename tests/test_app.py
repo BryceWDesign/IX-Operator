@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 import ix_operator.crypto.native as native_module
-from ix_operator import OperatorApplication
+from ix_operator import OperatorApplication, UnsupportedTransportBackendError
 
 
 class FakeNativeModule:
@@ -139,6 +139,24 @@ def test_application_boot_local_node_requires_existing_identity(
     app = OperatorApplication.from_env()
 
     with pytest.raises(FileNotFoundError, match="node identity not found"):
+        app.boot_local_node()
+
+
+def test_application_rejects_unimplemented_transport_backend(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(native_module, "_native", FakeNativeModule())
+    monkeypatch.setenv("IX_OPERATOR_RUNTIME_DIR", str(tmp_path / "runtime"))
+    monkeypatch.setenv("IX_OPERATOR_TRANSPORT", "tor")
+
+    app = OperatorApplication.from_env()
+    app.initialize_identity(peer_id="node-alpha")
+
+    with pytest.raises(
+        UnsupportedTransportBackendError,
+        match="transport backend 'tor' is not implemented in v1; supported backends: local",
+    ):
         app.boot_local_node()
 
 
