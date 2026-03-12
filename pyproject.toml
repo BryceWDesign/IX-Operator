@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling>=1.25.0"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "ix-operator"
@@ -35,8 +35,12 @@ dev = [
   "ruff>=0.6,<1.0"
 ]
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/ix_operator"]
+[tool.maturin]
+manifest-path = "crates/ix_crypto/Cargo.toml"
+module-name = "ix_operator._ix_crypto_native"
+python-source = "src"
+bindings = "pyo3"
+features = ["pyo3/extension-module"]
 
 [tool.pytest.ini_options]
 addopts = "-q"
