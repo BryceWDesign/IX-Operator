@@ -48,6 +48,7 @@ from ix_operator.ix import (
     SayStatement,
     parse_ix_script,
 )
+from ix_operator.network import OperatorNetwork
 from ix_operator.node import OperatorNode
 from ix_operator.runtime import RuntimeContext
 from ix_operator.session import (
@@ -164,6 +165,7 @@ __all__ = [
     "OperatorApplication",
     "OperatorConfig",
     "OperatorMode",
+    "OperatorNetwork",
     "OperatorNode",
     "PROTOCOL_LABEL",
     "PROTOCOL_VERSION",
@@ -171,7 +173,6 @@ __all__ = [
     "PacketCodec",
     "PacketHeader",
     "PeerIdentity",
-    "PRODUCT_NAME",
     "ReceivedAgentMessage",
     "RememberStatement",
     "ReplayRejectedError",
