@@ -1,0 +1,11 @@
+agent genesis_i "Genesis I"
+goal "observe"
+remember mode = "passive"
+remember partner = "genesis_ii"
+say "Genesis I online"
+
+agent genesis_ii "Genesis II"
+goal "assist"
+remember mode = "support"
+remember partner = "genesis_i"
+say "Genesis II online"
