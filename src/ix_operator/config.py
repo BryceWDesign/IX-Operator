@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 import os
+from typing import Final
 
 
 class OperatorMode(StrEnum):
@@ -16,6 +17,11 @@ class TransportBackend(StrEnum):
     LOCAL = "local"
     TCP = "tcp"
     TOR = "tor"
+
+
+IMPLEMENTED_TRANSPORT_BACKENDS: Final[tuple[TransportBackend, ...]] = (
+    TransportBackend.LOCAL,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,11 +70,6 @@ class OperatorConfig:
 
         if not (1 <= self.tor_socks_port <= 65535):
             raise ValueError("tor_socks_port must be within 1..65535")
-
-        if self.mode == OperatorMode.HARDENED and self.transport_backend == TransportBackend.LOCAL:
-            raise ValueError(
-                "hardened mode cannot use the local transport backend; choose tcp or tor"
-            )
 
     @classmethod
     def from_env(cls) -> "OperatorConfig":
