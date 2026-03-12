@@ -13,10 +13,20 @@ from ix_operator.agents import (
     AgentStatus,
     MemoryValue,
 )
-from ix_operator.app import OperatorApplication, ScriptRunResult
+from ix_operator.app import (
+    OperatorApplication,
+    ScriptRunResult,
+    UnsupportedTransportBackendError,
+)
 from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSeverity
 from ix_operator.bus import AgentBus, ChannelBinding, ReceivedAgentMessage
-from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
+from ix_operator.config import (
+    IMPLEMENTED_TRANSPORT_BACKENDS,
+    OperatorConfig,
+    OperatorMode,
+    RuntimePaths,
+    TransportBackend,
+)
 from ix_operator.crypto import (
     AEAD_TAG_LENGTH,
     NATIVE_SESSION_INFO,
@@ -141,6 +151,7 @@ __all__ = [
     "HandshakeHello",
     "HandshakeResponse",
     "HandshakeTranscript",
+    "IMPLEMENTED_TRANSPORT_BACKENDS",
     "IxInterpreter",
     "IxParseError",
     "IxProgram",
@@ -199,6 +210,7 @@ __all__ = [
     "TransportBackend",
     "TransportCryptoBackend",
     "TransportSessionState",
+    "UnsupportedTransportBackendError",
     "MessageRegistry",
     "MessageType",
     "build_packet",
