@@ -70,16 +70,19 @@ def test_full_handshake_round_trip_derives_matching_material() -> None:
 
     initiator_peer, initiator_secrets = _identity("initiator", 10)
     responder_peer, responder_secrets = _identity("responder", 30)
+    shared_session_id = "sess-shared-alpha"
 
     initiator_session = SessionRecord.create(
         role=SessionRole.INITIATOR,
         local_peer=initiator_peer,
         remote_peer=responder_peer,
+        session_id=shared_session_id,
     )
     responder_session = SessionRecord.create(
         role=SessionRole.RESPONDER,
         local_peer=responder_peer,
         remote_peer=initiator_peer,
+        session_id=shared_session_id,
     )
 
     hello = coordinator.create_hello(initiator_session)
@@ -139,11 +142,13 @@ def test_responder_rejects_mismatched_hello_identity() -> None:
 
     initiator_peer, _ = _identity("initiator", 1)
     responder_peer, responder_secrets = _identity("responder", 2)
+    shared_session_id = "sess-shared-beta"
 
     responder_session = SessionRecord.create(
         role=SessionRole.RESPONDER,
         local_peer=responder_peer,
         remote_peer=initiator_peer,
+        session_id=shared_session_id,
     )
 
     hello = coordinator.create_hello(
@@ -151,6 +156,7 @@ def test_responder_rejects_mismatched_hello_identity() -> None:
             role=SessionRole.INITIATOR,
             local_peer=initiator_peer,
             remote_peer=responder_peer,
+            session_id=shared_session_id,
         )
     )
     tampered = type(hello)(
@@ -176,16 +182,19 @@ def test_initiator_rejects_bad_response_signature() -> None:
 
     initiator_peer, initiator_secrets = _identity("initiator", 11)
     responder_peer, responder_secrets = _identity("responder", 22)
+    shared_session_id = "sess-shared-gamma"
 
     initiator_session = SessionRecord.create(
         role=SessionRole.INITIATOR,
         local_peer=initiator_peer,
         remote_peer=responder_peer,
+        session_id=shared_session_id,
     )
     responder_session = SessionRecord.create(
         role=SessionRole.RESPONDER,
         local_peer=responder_peer,
         remote_peer=initiator_peer,
+        session_id=shared_session_id,
     )
 
     hello = coordinator.create_hello(initiator_session)
