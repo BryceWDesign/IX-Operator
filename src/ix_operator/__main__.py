@@ -2,22 +2,12 @@ from __future__ import annotations
 
 from ix_operator import PRODUCT_NAME, __version__
 from ix_operator.config import OperatorConfig
-from ix_operator.logging import configure_logging
+from ix_operator.runtime import RuntimeContext
 
 
 def main() -> int:
     config = OperatorConfig.from_env()
-    config.runtime_paths.create()
-
-    logger = configure_logging(config)
-    logger.info(
-        "startup app=%s version=%s mode=%s transport=%s runtime_root=%s",
-        PRODUCT_NAME,
-        __version__,
-        config.mode.value,
-        config.transport_backend.value,
-        config.runtime_paths.root,
-    )
+    context = RuntimeContext.bootstrap(config)
 
     banner = f"""{PRODUCT_NAME} v{__version__}
 Bootstrap initialized.
@@ -25,11 +15,13 @@ Bootstrap initialized.
 Mode: {config.mode.value}
 Transport: {config.transport_backend.value}
 Runtime root: {config.runtime_paths.root}
+Boot ID: {context.boot_id}
 
 Current scope:
 - Rust crypto crate scaffold
 - Python package scaffold
 - Safe configuration and logging foundation
+- Structured audit trail and runtime context
 - Secure rebuild from square one
 """
     print(banner.rstrip())
