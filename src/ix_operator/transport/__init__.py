@@ -1,6 +1,13 @@
 from __future__ import annotations
 
 from ix_operator.transport.codec import PacketCodec, TransportCryptoBackend
+from ix_operator.transport.local import (
+    DEFAULT_RECEIVE_TIMEOUT_SECONDS,
+    LocalDelivery,
+    LocalTransportClosedError,
+    LocalTransportEndpoint,
+    LocalTransportHub,
+)
 from ix_operator.transport.packet import (
     DEFAULT_PACKET_SIZE,
     HEADER_SIZE,
@@ -30,6 +37,7 @@ from ix_operator.transport.state import (
 __all__ = [
     "DEFAULT_MESSAGE_REGISTRY_SIZE",
     "DEFAULT_PACKET_SIZE",
+    "DEFAULT_RECEIVE_TIMEOUT_SECONDS",
     "DEFAULT_REPLAY_WINDOW_SIZE",
     "HEADER_SIZE",
     "MAX_PACKET_SIZE",
@@ -41,6 +49,10 @@ __all__ = [
     "PacketCodec",
     "SESSION_ID_FIELD_SIZE",
     "TransportCryptoBackend",
+    "LocalDelivery",
+    "LocalTransportClosedError",
+    "LocalTransportEndpoint",
+    "LocalTransportHub",
     "MessageRegistry",
     "MessageType",
     "Packet",
