@@ -1,8 +1,12 @@
 pub mod error;
+pub mod kdf;
+pub mod rng;
 pub mod traits;
 pub mod types;
 
 pub use error::CryptoError;
+pub use kdf::derive_session_keys;
+pub use rng::{fill_random, random_nonce, random_secret};
 pub use traits::Wipe;
 pub use types::{
     AlgorithmId, PublicBytes, SecretBytes, SessionKeys, WireNonce, KEY_LEN_32, NONCE_LEN_12,
