@@ -19,11 +19,18 @@ from ix_operator.session.models import (
     SessionRole,
     SessionState,
 )
+from ix_operator.session.service import (
+    EstablishedSessionPair,
+    SessionEndpoint,
+    SessionService,
+    derive_channel_session_id,
+)
 from ix_operator.session.transcript import HandshakeTranscript, PROTOCOL_LABEL
 
 __all__ = [
     "CHALLENGE_LEN",
     "DEFAULT_SESSION_TTL_SECONDS",
+    "EstablishedSessionPair",
     "HandshakeAck",
     "HandshakeCoordinator",
     "HandshakeCryptoBackend",
@@ -35,9 +42,12 @@ __all__ = [
     "PROTOCOL_LABEL",
     "PeerIdentity",
     "SIGNATURE_LEN",
+    "SessionEndpoint",
     "SessionManager",
     "SessionMaterial",
     "SessionRecord",
     "SessionRole",
+    "SessionService",
     "SessionState",
+    "derive_channel_session_id",
 ]
