@@ -27,6 +27,20 @@ from ix_operator.session import (
     SessionRole,
     SessionState,
 )
+from ix_operator.transport import (
+    DEFAULT_PACKET_SIZE,
+    HEADER_SIZE,
+    MAX_PACKET_SIZE,
+    MESSAGE_ID_SIZE,
+    MIN_PACKET_SIZE,
+    NONCE_SIZE,
+    PROTOCOL_VERSION,
+    MessageType,
+    Packet,
+    PacketHeader,
+    build_packet,
+    packet_fingerprint,
+)
 
 __all__ = [
     "__version__",
@@ -36,7 +50,9 @@ __all__ = [
     "AuditLogger",
     "AuditSeverity",
     "CHALLENGE_LEN",
+    "DEFAULT_PACKET_SIZE",
     "DEFAULT_SESSION_TTL_SECONDS",
+    "HEADER_SIZE",
     "HandshakeAck",
     "HandshakeCoordinator",
     "HandshakeCryptoBackend",
@@ -44,10 +60,17 @@ __all__ = [
     "HandshakeResponse",
     "HandshakeTranscript",
     "LocalSecrets",
+    "MAX_PACKET_SIZE",
     "MAX_SESSIONS_DEFAULT",
+    "MESSAGE_ID_SIZE",
+    "MIN_PACKET_SIZE",
+    "NONCE_SIZE",
     "OperatorConfig",
     "OperatorMode",
     "PROTOCOL_LABEL",
+    "PROTOCOL_VERSION",
+    "Packet",
+    "PacketHeader",
     "PeerIdentity",
     "RuntimeContext",
     "RuntimePaths",
@@ -58,6 +81,9 @@ __all__ = [
     "SessionRole",
     "SessionState",
     "TransportBackend",
+    "MessageType",
+    "build_packet",
+    "packet_fingerprint",
 ]
 
 PRODUCT_NAME = "IX-Operator"
