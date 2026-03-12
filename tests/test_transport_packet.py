@@ -81,6 +81,23 @@ def test_packet_round_trip_fixed_size() -> None:
     assert decoded.packet_size == DEFAULT_PACKET_SIZE
 
 
+def test_packet_accepts_derived_channel_session_id_length() -> None:
+    channel_session_id = "chan-" + ("a" * 32)
+
+    packet = build_packet(
+        message_type=MessageType.DATA,
+        session_id=channel_session_id,
+        sequence_number=1,
+        nonce=b"n" * NONCE_SIZE,
+        ciphertext=b"sealed",
+    )
+
+    decoded = Packet.from_bytes(packet.to_bytes())
+
+    assert decoded.header.session_id == channel_session_id
+    assert len(channel_session_id.encode("utf-8")) <= SESSION_ID_FIELD_SIZE
+
+
 def test_packet_rejects_payload_over_capacity() -> None:
     oversized_ciphertext = b"x" * (DEFAULT_PACKET_SIZE - HEADER_SIZE + 1)
 
@@ -103,8 +120,8 @@ def test_packet_rejects_unknown_message_type() -> None:
     header[4:8] = (1).to_bytes(4, "big")
     header[8:10] = (0).to_bytes(2, "big")
     header[10 : 10 + SESSION_ID_FIELD_SIZE] = b"sess-x".ljust(SESSION_ID_FIELD_SIZE, b"\x00")
-    header[34:50] = b"m" * 16
-    header[50:62] = b"n" * 12
+    header[50:66] = b"m" * 16
+    header[66:78] = b"n" * 12
 
     with pytest.raises(ValueError, match="unknown message type: 99"):
         PacketHeader.from_bytes(bytes(header))
