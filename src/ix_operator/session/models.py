@@ -84,6 +84,7 @@ class SessionRecord:
         local_peer: PeerIdentity,
         remote_peer: PeerIdentity,
         ttl_seconds: int = DEFAULT_SESSION_TTL_SECONDS,
+        session_id: str | None = None,
     ) -> "SessionRecord":
         if ttl_seconds <= 0:
             raise ValueError("ttl_seconds must be greater than 0")
@@ -91,9 +92,13 @@ class SessionRecord:
         local_peer.validate()
         remote_peer.validate()
 
+        resolved_session_id = session_id.strip() if session_id is not None else _new_session_id()
+        if not resolved_session_id:
+            raise ValueError("session_id must not be empty when provided")
+
         now = datetime.now(UTC)
         return cls(
-            session_id=_new_session_id(),
+            session_id=resolved_session_id,
             role=role,
             state=SessionState.NEW,
             local_peer=local_peer,
