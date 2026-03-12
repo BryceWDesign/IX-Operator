@@ -7,11 +7,13 @@ from ix_operator.agents.models import (
     AgentRuntimeState,
     AgentStatus,
 )
+from ix_operator.agents.registry import AgentRegistry
 
 __all__ = [
     "AgentDefinition",
     "AgentMemoryStore",
     "AgentMessage",
+    "AgentRegistry",
     "AgentRuntimeState",
     "AgentStatus",
     "MemoryValue",
