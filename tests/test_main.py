@@ -134,6 +134,23 @@ def test_main_info_prints_runtime_status(
     assert "Native extension available: True" in captured.out
 
 
+def test_main_status_prints_diagnostics_snapshot(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setattr(native_module, "_native", FakeNativeModule())
+    monkeypatch.setenv("IX_OPERATOR_RUNTIME_DIR", str(tmp_path / "runtime"))
+
+    exit_code = main(["status"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "Identity exists: False" in captured.out
+    assert "Local peer ID: none" in captured.out
+    assert "Audit log:" in captured.out
+
+
 def test_main_defaults_to_info_when_no_args_are_provided(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
