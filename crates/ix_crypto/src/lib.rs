@@ -1,15 +1,22 @@
+pub mod asymmetric;
 pub mod error;
 pub mod kdf;
 pub mod rng;
 pub mod traits;
 pub mod types;
 
+pub use asymmetric::{
+    derive_ed25519_public_key, generate_ed25519_keypair, generate_x25519_keypair,
+    sign_ed25519, verify_ed25519, x25519_shared_secret,
+};
 pub use error::CryptoError;
 pub use kdf::derive_session_keys;
 pub use rng::{fill_random, random_nonce, random_secret};
 pub use traits::Wipe;
 pub use types::{
-    AlgorithmId, PublicBytes, SecretBytes, SessionKeys, WireNonce, KEY_LEN_32, NONCE_LEN_12,
+    AlgorithmId, PublicBytes, SecretBytes, SessionKeys, SignatureBytes, WireNonce,
+    ED25519_PUBLIC_KEY_LEN, ED25519_SECRET_KEY_LEN, ED25519_SIGNATURE_LEN, KEY_LEN_32,
+    NONCE_LEN_12, X25519_KEY_LEN,
 };
 
 pub const PRODUCT_NAME: &str = "IX-Operator";
