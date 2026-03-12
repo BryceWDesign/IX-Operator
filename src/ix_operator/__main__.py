@@ -14,6 +14,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
 
     subparsers.add_parser("info", help="Show runtime and extension status")
+    subparsers.add_parser("status", help="Show structured runtime status")
 
     identity_parser = subparsers.add_parser("identity", help="Manage node identity")
     identity_subparsers = identity_parser.add_subparsers(dest="identity_command")
@@ -54,6 +55,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"Boot ID: {app.context.boot_id}\n"
             f"Native extension available: {native_extension_available()}\n"
             f"Identity path: {app.identity_store.path}"
+        )
+        return 0
+
+    if parsed_args.command == "status":
+        snapshot = app.status_snapshot()
+        print(
+            f"{snapshot.product_name} v{snapshot.version}\n"
+            f"Mode: {snapshot.mode}\n"
+            f"Transport: {snapshot.transport}\n"
+            f"Boot ID: {snapshot.boot_id}\n"
+            f"Runtime root: {snapshot.runtime_root}\n"
+            f"Audit log: {snapshot.audit_log_path}\n"
+            f"Identity path: {snapshot.identity_path}\n"
+            f"Identity exists: {snapshot.identity_exists}\n"
+            f"Native extension available: {snapshot.native_extension_available}\n"
+            f"Local peer ID: {snapshot.local_peer_id or 'none'}"
         )
         return 0
 
