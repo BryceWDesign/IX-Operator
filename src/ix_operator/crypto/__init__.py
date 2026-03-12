@@ -7,6 +7,9 @@ from ix_operator.crypto.native import (
     NativeExtensionUnavailableError,
     NativeHandshakeBackend,
     NativeTransportBackend,
+    derive_peer_id,
+    generate_ed25519_keypair,
+    generate_x25519_keypair,
     native_extension_available,
 )
 
@@ -17,5 +20,8 @@ __all__ = [
     "NativeExtensionUnavailableError",
     "NativeHandshakeBackend",
     "NativeTransportBackend",
+    "derive_peer_id",
+    "generate_ed25519_keypair",
+    "generate_x25519_keypair",
     "native_extension_available",
 ]
