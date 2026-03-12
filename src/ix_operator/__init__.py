@@ -14,6 +14,7 @@ from ix_operator.agents import (
     MemoryValue,
 )
 from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSeverity
+from ix_operator.bus import AgentBus, ChannelBinding, ReceivedAgentMessage
 from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
 from ix_operator.ix import (
     AgentBlock,
@@ -84,6 +85,7 @@ __all__ = [
     "__version__",
     "PRODUCT_NAME",
     "AgentBlock",
+    "AgentBus",
     "AgentDefinition",
     "AgentMemoryStore",
     "AgentMessage",
@@ -95,6 +97,7 @@ __all__ = [
     "AuditLogger",
     "AuditSeverity",
     "CHALLENGE_LEN",
+    "ChannelBinding",
     "DEFAULT_MESSAGE_REGISTRY_SIZE",
     "DEFAULT_PACKET_SIZE",
     "DEFAULT_RECEIVE_TIMEOUT_SECONDS",
@@ -133,6 +136,7 @@ __all__ = [
     "PacketCodec",
     "PacketHeader",
     "PeerIdentity",
+    "ReceivedAgentMessage",
     "RememberStatement",
     "ReplayRejectedError",
     "ReplayWindow",
