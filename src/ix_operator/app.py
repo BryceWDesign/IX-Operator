@@ -9,6 +9,7 @@ from ix_operator.crypto import (
     NativeTransportBackend,
     native_extension_available,
 )
+from ix_operator.diagnostics import ApplicationSnapshot
 from ix_operator.identity import NodeIdentity, NodeIdentityStore, default_identity_store
 from ix_operator.node import OperatorNode
 from ix_operator.runtime import RuntimeContext
@@ -46,6 +47,25 @@ class OperatorApplication:
     @property
     def identity_store(self) -> NodeIdentityStore:
         return self._identity_store
+
+    def status_snapshot(self) -> ApplicationSnapshot:
+        identity = self._identity_store.load()
+
+        snapshot = ApplicationSnapshot(
+            product_name="IX-Operator",
+            version="0.1.0",
+            mode=self._config.mode.value,
+            transport=self._config.transport_backend.value,
+            boot_id=self._context.boot_id,
+            runtime_root=str(self._config.runtime_paths.root),
+            audit_log_path=str(self._context.audit.path),
+            identity_path=str(self._identity_store.path),
+            identity_exists=self._identity_store.exists(),
+            native_extension_available=native_extension_available(),
+            local_peer_id=identity.peer_id if identity is not None else None,
+        )
+        snapshot.validate()
+        return snapshot
 
     def initialize_identity(
         self,
