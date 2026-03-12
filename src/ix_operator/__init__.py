@@ -29,6 +29,7 @@ from ix_operator.ix import (
     SayStatement,
     parse_ix_script,
 )
+from ix_operator.node import OperatorNode
 from ix_operator.runtime import RuntimeContext
 from ix_operator.session import (
     CHALLENGE_LEN,
@@ -135,6 +136,7 @@ __all__ = [
     "NONCE_SIZE",
     "OperatorConfig",
     "OperatorMode",
+    "OperatorNode",
     "PROTOCOL_LABEL",
     "PROTOCOL_VERSION",
     "Packet",
