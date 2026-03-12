@@ -38,11 +38,14 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
-    args = parser.parse_args(list(argv) if argv is not None else ["info"])
+    parsed_args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if parsed_args.command is None:
+        parsed_args = parser.parse_args(["info"])
 
     app = OperatorApplication.from_env()
 
-    if args.command == "info":
+    if parsed_args.command == "info":
         print(
             f"{PRODUCT_NAME} v{__version__}\n"
             f"Mode: {app.config.mode.value}\n"
@@ -54,11 +57,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return 0
 
-    if args.command == "identity":
-        if args.identity_command == "init":
+    if parsed_args.command == "identity":
+        if parsed_args.identity_command == "init":
             identity = app.initialize_identity(
-                peer_id=args.peer_id,
-                peer_id_prefix=args.peer_id_prefix,
+                peer_id=parsed_args.peer_id,
+                peer_id_prefix=parsed_args.peer_id_prefix,
             )
             print(
                 f"Identity initialized.\n"
@@ -67,7 +70,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 0
 
-        if args.identity_command == "show":
+        if parsed_args.identity_command == "show":
             identity = app.load_identity()
             if identity is None:
                 print("No identity initialized.")
@@ -84,8 +87,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("identity requires a subcommand")
         return 2
 
-    if args.command == "run-script":
-        source = Path(args.path).read_text(encoding="utf-8")
+    if parsed_args.command == "run-script":
+        source = Path(parsed_args.path).read_text(encoding="utf-8")
         result = app.run_script(source)
         print(
             f"Script executed.\n"
