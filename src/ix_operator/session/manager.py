@@ -38,6 +38,7 @@ class SessionManager:
         local_peer: PeerIdentity,
         remote_peer: PeerIdentity,
         ttl_seconds: int = DEFAULT_SESSION_TTL_SECONDS,
+        session_id: str | None = None,
     ) -> SessionRecord:
         with self._lock:
             if len(self._sessions_by_id) >= self._max_sessions:
@@ -48,6 +49,7 @@ class SessionManager:
                 local_peer=local_peer,
                 remote_peer=remote_peer,
                 ttl_seconds=ttl_seconds,
+                session_id=session_id,
             )
             self._sessions_by_id[session.session_id] = session
             return deepcopy(session)
