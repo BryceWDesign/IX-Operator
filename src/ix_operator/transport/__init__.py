@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from ix_operator.transport.codec import PacketCodec, TransportCryptoBackend
 from ix_operator.transport.packet import (
     DEFAULT_PACKET_SIZE,
     HEADER_SIZE,
@@ -37,7 +38,9 @@ __all__ = [
     "MIN_PACKET_SIZE",
     "NONCE_SIZE",
     "PROTOCOL_VERSION",
+    "PacketCodec",
     "SESSION_ID_FIELD_SIZE",
+    "TransportCryptoBackend",
     "MessageRegistry",
     "MessageType",
     "Packet",
