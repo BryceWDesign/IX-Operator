@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ix_operator.config import OperatorConfig
+from ix_operator.config import (
+    IMPLEMENTED_TRANSPORT_BACKENDS,
+    OperatorConfig,
+    TransportBackend,
+)
 from ix_operator.crypto import (
     NativeExtensionUnavailableError,
     NativeHandshakeBackend,
@@ -22,6 +26,10 @@ class ScriptRunResult:
     peer_id: str
     report_count: int
     agent_ids: tuple[str, ...]
+
+
+class UnsupportedTransportBackendError(RuntimeError):
+    """Raised when a configured transport backend is not implemented in v1."""
 
 
 class OperatorApplication:
@@ -56,6 +64,7 @@ class OperatorApplication:
             version="0.1.0",
             mode=self._config.mode.value,
             transport=self._config.transport_backend.value,
+            transport_supported=self._config.transport_backend in IMPLEMENTED_TRANSPORT_BACKENDS,
             boot_id=self._context.boot_id,
             runtime_root=str(self._config.runtime_paths.root),
             audit_log_path=str(self._context.audit.path),
@@ -108,6 +117,7 @@ class OperatorApplication:
 
     def boot_local_node(self) -> OperatorNode:
         self._require_native_extension()
+        self._require_supported_transport_backend()
 
         identity = self._identity_store.load()
         if identity is None:
@@ -161,6 +171,16 @@ class OperatorApplication:
             raise NativeExtensionUnavailableError(
                 "native ix_crypto extension is unavailable; build the PyO3 module first"
             )
+
+    def _require_supported_transport_backend(self) -> None:
+        if self._config.transport_backend in IMPLEMENTED_TRANSPORT_BACKENDS:
+            return
+
+        supported = ", ".join(item.value for item in IMPLEMENTED_TRANSPORT_BACKENDS)
+        raise UnsupportedTransportBackendError(
+            f"transport backend '{self._config.transport_backend.value}' is not implemented in v1; "
+            f"supported backends: {supported}"
+        )
 
     def _info_severity(self):
         from ix_operator.audit import AuditSeverity
