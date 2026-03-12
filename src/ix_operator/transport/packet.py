@@ -11,12 +11,27 @@ HEADER_SIZE = 64
 DEFAULT_PACKET_SIZE = 1024
 MAX_PACKET_SIZE = 65535
 MIN_PACKET_SIZE = 256
-SESSION_ID_FIELD_SIZE = 40
+SESSION_ID_FIELD_SIZE = 24
 MESSAGE_ID_SIZE = 16
 NONCE_SIZE = 12
-RESERVED_SIZE = 7
+RESERVED_SIZE = 2
 
-_PAYLOAD_LENGTH_OFFSET = 57
+_VERSION_OFFSET = 0
+_MESSAGE_TYPE_OFFSET = 1
+_FLAGS_OFFSET = 2
+_RESERVED0_OFFSET = 3
+_SEQUENCE_START = 4
+_SEQUENCE_END = 8
+_PAYLOAD_LENGTH_START = 8
+_PAYLOAD_LENGTH_END = 10
+_SESSION_ID_START = 10
+_SESSION_ID_END = _SESSION_ID_START + SESSION_ID_FIELD_SIZE
+_MESSAGE_ID_START = _SESSION_ID_END
+_MESSAGE_ID_END = _MESSAGE_ID_START + MESSAGE_ID_SIZE
+_NONCE_START = _MESSAGE_ID_END
+_NONCE_END = _NONCE_START + NONCE_SIZE
+_RESERVED_START = _NONCE_END
+_RESERVED_END = _RESERVED_START + RESERVED_SIZE
 
 
 class MessageType(IntEnum):
@@ -52,8 +67,8 @@ class PacketHeader:
             raise ValueError(f"message_id must be {MESSAGE_ID_SIZE} bytes")
         if len(self.nonce) != NONCE_SIZE:
             raise ValueError(f"nonce must be {NONCE_SIZE} bytes")
-        if self.payload_length < 0:
-            raise ValueError("payload_length must be non-negative")
+        if not (0 <= self.payload_length <= 0xFFFF):
+            raise ValueError("payload_length must be within 0..65535")
 
     def to_bytes(self) -> bytes:
         self.validate()
@@ -62,15 +77,16 @@ class PacketHeader:
         padded_session = session_bytes.ljust(SESSION_ID_FIELD_SIZE, b"\x00")
 
         output = bytearray(HEADER_SIZE)
-        output[0] = self.version
-        output[1] = int(self.message_type)
-        output[2] = self.flags
-        output[3:7] = self.sequence_number.to_bytes(4, "big")
-        output[7 : 7 + SESSION_ID_FIELD_SIZE] = padded_session
-        output[47 : 47 + MESSAGE_ID_SIZE] = self.message_id
-        output[63 - NONCE_SIZE - RESERVED_SIZE : 63 - RESERVED_SIZE] = self.nonce
-        output[_PAYLOAD_LENGTH_OFFSET:59] = self.payload_length.to_bytes(2, "big")
-        output[59:64] = b"\x00" * 5
+        output[_VERSION_OFFSET] = self.version
+        output[_MESSAGE_TYPE_OFFSET] = int(self.message_type)
+        output[_FLAGS_OFFSET] = self.flags
+        output[_RESERVED0_OFFSET] = 0
+        output[_SEQUENCE_START:_SEQUENCE_END] = self.sequence_number.to_bytes(4, "big")
+        output[_PAYLOAD_LENGTH_START:_PAYLOAD_LENGTH_END] = self.payload_length.to_bytes(2, "big")
+        output[_SESSION_ID_START:_SESSION_ID_END] = padded_session
+        output[_MESSAGE_ID_START:_MESSAGE_ID_END] = self.message_id
+        output[_NONCE_START:_NONCE_END] = self.nonce
+        output[_RESERVED_START:_RESERVED_END] = b"\x00" * RESERVED_SIZE
 
         return bytes(output)
 
@@ -79,16 +95,14 @@ class PacketHeader:
         if len(data) != HEADER_SIZE:
             raise ValueError(f"header must be exactly {HEADER_SIZE} bytes")
 
-        version = data[0]
-        message_type_raw = data[1]
-        flags = data[2]
-        sequence_number = int.from_bytes(data[3:7], "big")
-        session_id = data[7 : 7 + SESSION_ID_FIELD_SIZE].rstrip(b"\x00").decode("utf-8")
-        message_id = data[47 : 47 + MESSAGE_ID_SIZE]
-        nonce_start = 63 - NONCE_SIZE - RESERVED_SIZE
-        nonce_end = 63 - RESERVED_SIZE
-        nonce = data[nonce_start:nonce_end]
-        payload_length = int.from_bytes(data[_PAYLOAD_LENGTH_OFFSET:59], "big")
+        version = data[_VERSION_OFFSET]
+        message_type_raw = data[_MESSAGE_TYPE_OFFSET]
+        flags = data[_FLAGS_OFFSET]
+        sequence_number = int.from_bytes(data[_SEQUENCE_START:_SEQUENCE_END], "big")
+        payload_length = int.from_bytes(data[_PAYLOAD_LENGTH_START:_PAYLOAD_LENGTH_END], "big")
+        session_id = data[_SESSION_ID_START:_SESSION_ID_END].rstrip(b"\x00").decode("utf-8")
+        message_id = data[_MESSAGE_ID_START:_MESSAGE_ID_END]
+        nonce = data[_NONCE_START:_NONCE_END]
 
         try:
             message_type = MessageType(message_type_raw)
