@@ -23,7 +23,16 @@ from ix_operator.crypto import (
     NativeExtensionUnavailableError,
     NativeHandshakeBackend,
     NativeTransportBackend,
+    derive_peer_id,
+    generate_ed25519_keypair,
+    generate_x25519_keypair,
     native_extension_available,
+)
+from ix_operator.identity import (
+    NodeIdentity,
+    NodeIdentityStore,
+    default_identity_store,
+    generate_node_identity,
 )
 from ix_operator.ix import (
     AgentBlock,
@@ -149,6 +158,8 @@ __all__ = [
     "NativeExtensionUnavailableError",
     "NativeHandshakeBackend",
     "NativeTransportBackend",
+    "NodeIdentity",
+    "NodeIdentityStore",
     "OperatorConfig",
     "OperatorMode",
     "OperatorNode",
@@ -182,7 +193,12 @@ __all__ = [
     "MessageRegistry",
     "MessageType",
     "build_packet",
+    "default_identity_store",
     "derive_channel_session_id",
+    "derive_peer_id",
+    "generate_ed25519_keypair",
+    "generate_node_identity",
+    "generate_x25519_keypair",
     "native_extension_available",
     "packet_fingerprint",
     "parse_ix_script",
