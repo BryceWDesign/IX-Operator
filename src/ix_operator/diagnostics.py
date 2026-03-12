@@ -32,6 +32,7 @@ class ApplicationSnapshot:
     version: str
     mode: str
     transport: str
+    transport_supported: bool
     boot_id: str
     runtime_root: str
     audit_log_path: str
