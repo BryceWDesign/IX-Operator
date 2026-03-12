@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -131,6 +132,41 @@ def test_main_info_prints_runtime_status(
     assert "Transport: local" in captured.out
     assert "Boot ID:" in captured.out
     assert "Native extension available: True" in captured.out
+
+
+def test_main_defaults_to_info_when_no_args_are_provided(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setattr(native_module, "_native", FakeNativeModule())
+    monkeypatch.setenv("IX_OPERATOR_RUNTIME_DIR", str(tmp_path / "runtime"))
+    monkeypatch.setattr(sys, "argv", ["ix-operator"])
+
+    exit_code = main(None)
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "IX-Operator v0.1.0" in captured.out
+    assert "Identity path:" in captured.out
+
+
+def test_main_honors_real_sys_argv_for_identity_init(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setattr(native_module, "_native", FakeNativeModule())
+    monkeypatch.setenv("IX_OPERATOR_RUNTIME_DIR", str(tmp_path / "runtime"))
+    monkeypatch.setattr(sys, "argv", ["ix-operator", "identity", "init", "--peer-id", "node-alpha"])
+
+    exit_code = main(None)
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "Identity initialized." in captured.out
+    assert "Peer ID: node-alpha" in captured.out
+    assert (tmp_path / "runtime" / "state" / "node_identity.json").is_file()
 
 
 def test_main_identity_init_creates_identity(
