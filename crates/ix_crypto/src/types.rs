@@ -6,6 +6,11 @@ use crate::traits::Wipe;
 pub const KEY_LEN_32: usize = 32;
 pub const NONCE_LEN_12: usize = 12;
 
+pub const X25519_KEY_LEN: usize = 32;
+pub const ED25519_SECRET_KEY_LEN: usize = 32;
+pub const ED25519_PUBLIC_KEY_LEN: usize = 32;
+pub const ED25519_SIGNATURE_LEN: usize = 64;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AlgorithmId {
     X25519,
@@ -37,6 +42,17 @@ impl PublicBytes {
         Self {
             inner: input.to_vec(),
         }
+    }
+
+    pub fn from_exact(input: &[u8], expected_len: usize) -> Result<Self, CryptoError> {
+        if input.len() != expected_len {
+            return Err(CryptoError::InvalidPublicKeyLength {
+                expected: expected_len,
+                actual: input.len(),
+            });
+        }
+
+        Ok(Self::from_slice(input))
     }
 
     pub fn as_slice(&self) -> &[u8] {
@@ -113,6 +129,46 @@ impl Drop for SecretBytes {
     }
 }
 
+#[derive(Clone, PartialEq, Eq)]
+pub struct SignatureBytes {
+    inner: Vec<u8>,
+}
+
+impl SignatureBytes {
+    pub fn from_slice(input: &[u8]) -> Self {
+        Self {
+            inner: input.to_vec(),
+        }
+    }
+
+    pub fn from_exact(input: &[u8], expected_len: usize) -> Result<Self, CryptoError> {
+        if input.len() != expected_len {
+            return Err(CryptoError::InvalidSignatureLength {
+                expected: expected_len,
+                actual: input.len(),
+            });
+        }
+
+        Ok(Self::from_slice(input))
+    }
+
+    pub fn as_slice(&self) -> &[u8] {
+        &self.inner
+    }
+
+    pub fn len(&self) -> usize {
+        self.inner.len()
+    }
+}
+
+impl fmt::Debug for SignatureBytes {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("SignatureBytes")
+            .field("len", &self.inner.len())
+            .finish()
+    }
+}
+
 pub struct WireNonce {
     inner: [u8; NONCE_LEN_12],
 }
@@ -148,10 +204,7 @@ pub struct SessionKeys {
 }
 
 impl SessionKeys {
-    pub fn new(
-        encryption_key: &[u8],
-        authentication_key: &[u8],
-    ) -> Result<Self, CryptoError> {
+    pub fn new(encryption_key: &[u8], authentication_key: &[u8]) -> Result<Self, CryptoError> {
         Ok(Self {
             encryption_key: SecretBytes::from_exact(encryption_key, KEY_LEN_32)?,
             authentication_key: SecretBytes::from_exact(authentication_key, KEY_LEN_32)?,
