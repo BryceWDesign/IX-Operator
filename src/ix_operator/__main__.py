@@ -47,10 +47,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     app = OperatorApplication.from_env()
 
     if parsed_args.command == "info":
+        snapshot = app.status_snapshot()
         print(
             f"{PRODUCT_NAME} v{__version__}\n"
             f"Mode: {app.config.mode.value}\n"
             f"Transport: {app.config.transport_backend.value}\n"
+            f"Transport implemented: {snapshot.transport_supported}\n"
             f"Runtime root: {app.config.runtime_paths.root}\n"
             f"Boot ID: {app.context.boot_id}\n"
             f"Native extension available: {native_extension_available()}\n"
@@ -64,6 +66,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{snapshot.product_name} v{snapshot.version}\n"
             f"Mode: {snapshot.mode}\n"
             f"Transport: {snapshot.transport}\n"
+            f"Transport implemented: {snapshot.transport_supported}\n"
             f"Boot ID: {snapshot.boot_id}\n"
             f"Runtime root: {snapshot.runtime_root}\n"
             f"Audit log: {snapshot.audit_log_path}\n"
