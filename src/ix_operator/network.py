@@ -5,6 +5,7 @@ from typing import Callable
 
 from ix_operator.agents import AgentMessage
 from ix_operator.bus import ReceivedAgentMessage
+from ix_operator.diagnostics import NetworkSnapshot
 from ix_operator.identity import NodeIdentity
 from ix_operator.ix import ExecutionReport, IxProgram
 from ix_operator.node import OperatorNode
@@ -49,6 +50,18 @@ class OperatorNetwork:
     @property
     def hub(self) -> LocalTransportHub:
         return self._hub
+
+    def snapshot(self) -> NetworkSnapshot:
+        with self._lock:
+            peer_ids = tuple(sorted(self._nodes.keys()))
+            node_snapshots = tuple(self._nodes[peer_id].snapshot() for peer_id in peer_ids)
+
+        snapshot = NetworkSnapshot(
+            peer_ids=peer_ids,
+            node_snapshots=node_snapshots,
+        )
+        snapshot.validate()
+        return snapshot
 
     def add_node(self, identity: NodeIdentity) -> OperatorNode:
         identity.validate()
