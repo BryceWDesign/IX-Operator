@@ -1,3 +1,4 @@
+pub mod aead;
 pub mod asymmetric;
 pub mod error;
 pub mod kdf;
@@ -5,9 +6,13 @@ pub mod rng;
 pub mod traits;
 pub mod types;
 
+pub use aead::{
+    decrypt, decrypt_aes256_gcm, decrypt_chacha20_poly1305, encrypt, encrypt_aes256_gcm,
+    encrypt_chacha20_poly1305,
+};
 pub use asymmetric::{
-    derive_ed25519_public_key, generate_ed25519_keypair, generate_x25519_keypair,
-    sign_ed25519, verify_ed25519, x25519_shared_secret,
+    derive_ed25519_public_key, derive_x25519_public_key, generate_ed25519_keypair,
+    generate_x25519_keypair, sign_ed25519, verify_ed25519, x25519_shared_secret,
 };
 pub use error::CryptoError;
 pub use kdf::derive_session_keys;
