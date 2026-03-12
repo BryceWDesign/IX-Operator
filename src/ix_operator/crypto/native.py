@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
+import hashlib
 import importlib
 from typing import Any
 
@@ -42,6 +43,29 @@ def _require_native_module() -> Any:
             "ix_operator._ix_crypto_native is not available; build the PyO3 extension first"
         )
     return _native
+
+
+def generate_x25519_keypair() -> tuple[bytes, bytes]:
+    native = _require_native_module()
+    private_key, public_key = native.generate_x25519_keypair_py()
+    return bytes(private_key), bytes(public_key)
+
+
+def generate_ed25519_keypair() -> tuple[bytes, bytes]:
+    native = _require_native_module()
+    private_key, public_key = native.generate_ed25519_keypair_py()
+    return bytes(private_key), bytes(public_key)
+
+
+def derive_peer_id(signing_public_key: bytes, *, prefix: str = "node") -> str:
+    normalized_prefix = prefix.strip()
+    if not normalized_prefix:
+        raise ValueError("prefix must not be empty")
+    if len(signing_public_key) != 32:
+        raise ValueError("signing_public_key must be 32 bytes")
+
+    digest = hashlib.sha256(signing_public_key).hexdigest()[:24]
+    return f"{normalized_prefix}-{digest}"
 
 
 class NativeHandshakeBackend:
