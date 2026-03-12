@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from ix_operator.agents import AgentMessage, AgentRegistry
 from ix_operator.bus import AgentBus, ReceivedAgentMessage
+from ix_operator.diagnostics import NodeSnapshot
 from ix_operator.identity import NodeIdentity
 from ix_operator.ix import ExecutionReport, IxInterpreter, IxProgram, parse_ix_script
 from ix_operator.session import (
@@ -124,6 +125,20 @@ class OperatorNode:
     @property
     def session_endpoint(self) -> SessionEndpoint:
         return self._session_endpoint
+
+    def snapshot(self) -> NodeSnapshot:
+        states = self._registry.list_states()
+        registered_agents = tuple(sorted(state.definition.agent_id for state in states))
+        active_agent_count = sum(1 for state in states if state.status.value == "running")
+
+        snapshot = NodeSnapshot(
+            peer_id=self.peer_id,
+            channel_peers=tuple(self.list_channels()),
+            registered_agents=registered_agents,
+            active_agent_count=active_agent_count,
+        )
+        snapshot.validate()
+        return snapshot
 
     def boot_program(self, program_or_source: IxProgram | str) -> tuple[ExecutionReport, ...]:
         program = self._coerce_program(program_or_source)
