@@ -9,3 +9,8 @@ description = "Rust cryptographic core for IX-Operator"
 [lib]
 name = "ix_crypto"
 path = "src/lib.rs"
+
+[dependencies]
+hkdf = "0.12.4"
+rand = "0.8.5"
+sha2 = "0.10.9"
