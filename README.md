@@ -48,12 +48,17 @@ of the clean rebuild.
 
 ```text
 IX-Operator/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── crates/
 │   └── ix_crypto/
 │       ├── Cargo.toml
 │       └── src/
 │           ├── bindings.rs
 │           └── lib.rs
+├── examples/
+│   └── genesis.ix
 ├── src/
 │   └── ix_operator/
 │       ├── __init__.py
@@ -94,14 +99,30 @@ pytest
 Run the Rust test suite:
 cargo test -p ix_crypto
 
-Run the CLI info command:
+cargo test -p ix_crypto
 ix-operator info
 
 Initialize a node identity:
 ix-operator identity init --peer-id node-alpha
 
-Run a script:
+Run the example script:
 ix-operator run-script examples/genesis.ix
+
+Continuous integration
+
+GitHub Actions now runs:
+
+Ruff linting
+
+MyPy typechecking
+
+Python tests
+
+Rust tests
+
+release wheel builds through maturin
+
+The CI workflow lives at .github/workflows/ci.yml.
 
 Current CLI surface
 
