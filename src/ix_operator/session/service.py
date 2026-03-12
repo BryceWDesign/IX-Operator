@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
+from uuid import uuid4
 
 from ix_operator.session.handshake import (
     HandshakeCoordinator,
@@ -68,17 +69,21 @@ class SessionService:
         initiator.validate()
         responder.validate()
 
+        shared_handshake_session_id = _new_handshake_session_id()
+
         initiator_record = initiator.manager.create_session(
             role=SessionRole.INITIATOR,
             local_peer=initiator.local_peer,
             remote_peer=responder.local_peer,
             ttl_seconds=ttl_seconds,
+            session_id=shared_handshake_session_id,
         )
         responder_record = responder.manager.create_session(
             role=SessionRole.RESPONDER,
             local_peer=responder.local_peer,
             remote_peer=initiator.local_peer,
             ttl_seconds=ttl_seconds,
+            session_id=shared_handshake_session_id,
         )
 
         initiator_record = initiator.manager.start_handshake(initiator_record.session_id)
@@ -131,3 +136,7 @@ def derive_channel_session_id(transcript_hash: bytes) -> str:
     if len(transcript_hash) != 32:
         raise ValueError("transcript_hash must be 32 bytes")
     return f"chan-{transcript_hash[:16].hex()}"
+
+
+def _new_handshake_session_id() -> str:
+    return f"sess-{uuid4().hex}"
