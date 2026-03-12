@@ -12,7 +12,7 @@ core layers:
 
 ## Status
 
-Bootstrap stage.
+Pre-alpha rebuild.
 
 The goal of v1 is not to look flashy. The goal is to be small, testable,
 honest, and secure by construction.
@@ -52,39 +52,82 @@ IX-Operator/
 │   └── ix_crypto/
 │       ├── Cargo.toml
 │       └── src/
+│           ├── bindings.rs
 │           └── lib.rs
 ├── src/
 │   └── ix_operator/
 │       ├── __init__.py
-│       └── __main__.py
+│       ├── __main__.py
+│       ├── app.py
+│       ├── bus.py
+│       ├── crypto/
+│       ├── agents/
+│       ├── ix/
+│       ├── session/
+│       └── transport/
+├── tests/
 ├── .editorconfig
 ├── .gitignore
 ├── Cargo.toml
 ├── LICENSE
+├── Makefile
 ├── pyproject.toml
 └── README.md
 
-Initial commands
+Build and development
 
-Run the Python bootstrap entrypoint:
-python -m ix_operator
+IX-Operator now uses maturin so the Rust extension and Python package are
+built together correctly.
 
-Run the Rust crate tests:
+Create a development environment and install dependencies:
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+
+Build and install the native extension for development:
+maturin develop
+
+Run the Python test suite:
+pytest
+
+Run the Rust test suite:
 cargo test -p ix_crypto
+
+Run the CLI info command:
+ix-operator info
+
+Initialize a node identity:
+ix-operator identity init --peer-id node-alpha
+
+Run a script:
+ix-operator run-script examples/genesis.ix
+
+Current CLI surface
+
+The current CLI provides:
+
+ix-operator info
+
+ix-operator identity init
+
+ix-operator identity show
+
+ix-operator run-script <path>
 
 Long-term result
 
 When complete, IX-Operator should be a serious, self-hosted operator platform
 for autonomous agents that can:
 
-• launch agents under one runtime
+launch agents under one runtime
 
-• establish authenticated sessions correctly
+establish authenticated sessions correctly
 
-• move messages through a clear transport layer
+move messages through a clear transport layer
 
-• keep cryptographic responsibilities contained and auditable
+keep cryptographic responsibilities contained and auditable
 
-• remain understandable to other engineers reading the code
+remain understandable to other engineers reading the code
 
 That is the bar.
