@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from ix_operator.agents import AgentMessage, AgentRegistry
 from ix_operator.bus import AgentBus, ReceivedAgentMessage
+from ix_operator.identity import NodeIdentity
 from ix_operator.ix import ExecutionReport, IxInterpreter, IxProgram, parse_ix_script
 from ix_operator.session import (
     DEFAULT_SESSION_TTL_SECONDS,
@@ -85,6 +86,27 @@ class OperatorNode:
             session_endpoint=session_endpoint,
             session_service=session_service,
             bus=bus,
+        )
+
+    @classmethod
+    def from_identity(
+        cls,
+        *,
+        identity: NodeIdentity,
+        hub: LocalTransportHub,
+        session_service: SessionService,
+        codec: PacketCodec,
+    ) -> "OperatorNode":
+        identity.validate()
+        return cls.create(
+            peer_id=identity.peer_id,
+            signing_public_key=identity.signing_public_key,
+            exchange_public_key=identity.exchange_public_key,
+            signing_private_key=identity.signing_private_key,
+            exchange_private_key=identity.exchange_private_key,
+            hub=hub,
+            session_service=session_service,
+            codec=codec,
         )
 
     @property
