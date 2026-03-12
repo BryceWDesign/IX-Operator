@@ -17,11 +17,14 @@ from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSever
 from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
 from ix_operator.ix import (
     AgentBlock,
+    ExecutionReport,
     GoalStatement,
+    IxInterpreter,
     IxParseError,
     IxProgram,
     IxStatement,
     RememberStatement,
+    SayEmission,
     SayStatement,
     parse_ix_script,
 )
@@ -97,6 +100,7 @@ __all__ = [
     "DEFAULT_RECEIVE_TIMEOUT_SECONDS",
     "DEFAULT_REPLAY_WINDOW_SIZE",
     "DEFAULT_SESSION_TTL_SECONDS",
+    "ExecutionReport",
     "GoalStatement",
     "HEADER_SIZE",
     "HandshakeAck",
@@ -105,6 +109,7 @@ __all__ = [
     "HandshakeHello",
     "HandshakeResponse",
     "HandshakeTranscript",
+    "IxInterpreter",
     "IxParseError",
     "IxProgram",
     "IxStatement",
@@ -135,6 +140,7 @@ __all__ = [
     "RuntimePaths",
     "SESSION_ID_FIELD_SIZE",
     "SIGNATURE_LEN",
+    "SayEmission",
     "SayStatement",
     "SessionBindingError",
     "SessionManager",
