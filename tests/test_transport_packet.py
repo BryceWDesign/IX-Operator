@@ -7,6 +7,7 @@ from ix_operator.transport import (
     HEADER_SIZE,
     MESSAGE_ID_SIZE,
     NONCE_SIZE,
+    SESSION_ID_FIELD_SIZE,
     MessageType,
     Packet,
     PacketHeader,
@@ -38,6 +39,26 @@ def test_packet_header_round_trip() -> None:
     assert decoded.message_id == b"a" * MESSAGE_ID_SIZE
     assert decoded.nonce == b"b" * NONCE_SIZE
     assert decoded.payload_length == 99
+
+
+def test_packet_header_preserves_distinct_fields_without_overlap() -> None:
+    header = PacketHeader(
+        version=1,
+        message_type=MessageType.HANDSHAKE,
+        flags=9,
+        sequence_number=123456,
+        session_id="sess-layout",
+        message_id=bytes(range(16)),
+        nonce=bytes(range(100, 112)),
+        payload_length=321,
+    )
+
+    encoded = header.to_bytes()
+    decoded = PacketHeader.from_bytes(encoded)
+
+    assert decoded.message_id == bytes(range(16))
+    assert decoded.nonce == bytes(range(100, 112))
+    assert decoded.payload_length == 321
 
 
 def test_packet_round_trip_fixed_size() -> None:
@@ -79,14 +100,28 @@ def test_packet_rejects_unknown_message_type() -> None:
     header[0] = 1
     header[1] = 99
     header[2] = 0
-    header[3:7] = (1).to_bytes(4, "big")
-    header[7:47] = b"sess-x".ljust(40, b"\x00")
-    header[47:63] = b"m" * 16
-    header[44:56] = b"n" * 12
-    header[57:59] = (0).to_bytes(2, "big")
+    header[4:8] = (1).to_bytes(4, "big")
+    header[8:10] = (0).to_bytes(2, "big")
+    header[10 : 10 + SESSION_ID_FIELD_SIZE] = b"sess-x".ljust(SESSION_ID_FIELD_SIZE, b"\x00")
+    header[34:50] = b"m" * 16
+    header[50:62] = b"n" * 12
 
     with pytest.raises(ValueError, match="unknown message type: 99"):
         PacketHeader.from_bytes(bytes(header))
+
+
+def test_packet_rejects_session_id_too_long() -> None:
+    with pytest.raises(ValueError, match=f"session_id exceeds {SESSION_ID_FIELD_SIZE} bytes"):
+        PacketHeader(
+            version=1,
+            message_type=MessageType.DATA,
+            flags=0,
+            sequence_number=1,
+            session_id="s" * (SESSION_ID_FIELD_SIZE + 1),
+            message_id=b"a" * MESSAGE_ID_SIZE,
+            nonce=b"b" * NONCE_SIZE,
+            payload_length=5,
+        ).to_bytes()
 
 
 def test_packet_fingerprint_is_stable_for_same_bytes() -> None:
