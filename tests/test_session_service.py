@@ -14,6 +14,7 @@ from ix_operator.session import (
     SessionState,
     derive_channel_session_id,
 )
+from ix_operator.transport import SESSION_ID_FIELD_SIZE
 
 
 class FakeHandshakeCryptoBackend:
@@ -85,6 +86,7 @@ def test_establish_pair_creates_active_sessions_and_matching_material() -> None:
     )
 
     assert established.channel_session_id.startswith("chan-")
+    assert len(established.channel_session_id.encode("utf-8")) <= SESSION_ID_FIELD_SIZE
     assert established.initiator_session.state == SessionState.ACTIVE
     assert established.responder_session.state == SessionState.ACTIVE
     assert established.initiator_session.role == SessionRole.INITIATOR
