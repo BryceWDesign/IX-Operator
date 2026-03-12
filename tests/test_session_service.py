@@ -87,6 +87,7 @@ def test_establish_pair_creates_active_sessions_and_matching_material() -> None:
 
     assert established.channel_session_id.startswith("chan-")
     assert len(established.channel_session_id.encode("utf-8")) <= SESSION_ID_FIELD_SIZE
+    assert established.initiator_session.session_id == established.responder_session.session_id
     assert established.initiator_session.state == SessionState.ACTIVE
     assert established.responder_session.state == SessionState.ACTIVE
     assert established.initiator_session.role == SessionRole.INITIATOR
@@ -112,6 +113,7 @@ def test_establish_pair_creates_active_sessions_and_matching_material() -> None:
     assert responder_active is not None
     assert initiator_active.state == SessionState.ACTIVE
     assert responder_active.state == SessionState.ACTIVE
+    assert initiator_active.session_id == responder_active.session_id
 
 
 def test_channel_session_id_is_deterministic_for_same_transcript_hash() -> None:
