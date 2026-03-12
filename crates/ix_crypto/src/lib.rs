@@ -1,5 +1,6 @@
 pub mod aead;
 pub mod asymmetric;
+pub mod bindings;
 pub mod error;
 pub mod kdf;
 pub mod rng;
