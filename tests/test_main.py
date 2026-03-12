@@ -21,4 +21,5 @@ def test_main_prints_bootstrap_banner(
     assert "IX-Operator v0.1.0" in captured.out
     assert "Mode: development" in captured.out
     assert "Transport: local" in captured.out
+    assert "Boot ID:" in captured.out
     assert str((tmp_path / "runtime").resolve()) in captured.out
