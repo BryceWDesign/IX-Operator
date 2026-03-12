@@ -29,6 +29,7 @@ from ix_operator.crypto import (
     generate_x25519_keypair,
     native_extension_available,
 )
+from ix_operator.diagnostics import ApplicationSnapshot, NetworkSnapshot, NodeSnapshot
 from ix_operator.identity import (
     NodeIdentity,
     NodeIdentityStore,
@@ -118,6 +119,7 @@ __all__ = [
     "AgentRegistry",
     "AgentRuntimeState",
     "AgentStatus",
+    "ApplicationSnapshot",
     "AuditCategory",
     "AuditEvent",
     "AuditLogger",
@@ -160,8 +162,10 @@ __all__ = [
     "NativeExtensionUnavailableError",
     "NativeHandshakeBackend",
     "NativeTransportBackend",
+    "NetworkSnapshot",
     "NodeIdentity",
     "NodeIdentityStore",
+    "NodeSnapshot",
     "OperatorApplication",
     "OperatorConfig",
     "OperatorMode",
