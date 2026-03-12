@@ -16,6 +16,15 @@ from ix_operator.agents import (
 from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSeverity
 from ix_operator.bus import AgentBus, ChannelBinding, ReceivedAgentMessage
 from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
+from ix_operator.crypto import (
+    AEAD_TAG_LENGTH,
+    NATIVE_SESSION_INFO,
+    NativeAeadAlgorithm,
+    NativeExtensionUnavailableError,
+    NativeHandshakeBackend,
+    NativeTransportBackend,
+    native_extension_available,
+)
 from ix_operator.ix import (
     AgentBlock,
     ExecutionReport,
@@ -89,6 +98,7 @@ from ix_operator.transport import (
 __all__ = [
     "__version__",
     "PRODUCT_NAME",
+    "AEAD_TAG_LENGTH",
     "AgentBlock",
     "AgentBus",
     "AgentDefinition",
@@ -133,7 +143,12 @@ __all__ = [
     "MESSAGE_ID_SIZE",
     "MIN_PACKET_SIZE",
     "MemoryValue",
+    "NATIVE_SESSION_INFO",
     "NONCE_SIZE",
+    "NativeAeadAlgorithm",
+    "NativeExtensionUnavailableError",
+    "NativeHandshakeBackend",
+    "NativeTransportBackend",
     "OperatorConfig",
     "OperatorMode",
     "OperatorNode",
@@ -168,6 +183,7 @@ __all__ = [
     "MessageType",
     "build_packet",
     "derive_channel_session_id",
+    "native_extension_available",
     "packet_fingerprint",
     "parse_ix_script",
 ]
