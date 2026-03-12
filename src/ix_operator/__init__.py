@@ -4,6 +4,14 @@ IX-Operator package bootstrap.
 
 from __future__ import annotations
 
+from ix_operator.agents import (
+    AgentDefinition,
+    AgentMemoryStore,
+    AgentMessage,
+    AgentRuntimeState,
+    AgentStatus,
+    MemoryValue,
+)
 from ix_operator.audit import AuditCategory, AuditEvent, AuditLogger, AuditSeverity
 from ix_operator.config import OperatorConfig, OperatorMode, RuntimePaths, TransportBackend
 from ix_operator.runtime import RuntimeContext
@@ -61,6 +69,11 @@ from ix_operator.transport import (
 __all__ = [
     "__version__",
     "PRODUCT_NAME",
+    "AgentDefinition",
+    "AgentMemoryStore",
+    "AgentMessage",
+    "AgentRuntimeState",
+    "AgentStatus",
     "AuditCategory",
     "AuditEvent",
     "AuditLogger",
@@ -88,6 +101,7 @@ __all__ = [
     "MAX_SESSIONS_DEFAULT",
     "MESSAGE_ID_SIZE",
     "MIN_PACKET_SIZE",
+    "MemoryValue",
     "NONCE_SIZE",
     "OperatorConfig",
     "OperatorMode",
